@@ -8,7 +8,10 @@ body {
   font-family: sans-serif;
   background-color: #0f2d6c;
   color: white;
-  min-width: 380px;
+  min-width: 400px;
+  overflow-x: hidden;
+  height: 100%;
+  margin: 0;
 }
 
 .footer__street {
