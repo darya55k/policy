@@ -355,6 +355,7 @@ body {
 .bio__img {
   width: 252px;
   height: fit-content;
+  margin-left: 40px;
 }
 
 .bio__content {
@@ -364,6 +365,10 @@ body {
 
 .bio__title {
   padding-bottom: 30px;
+}
+
+.bio__text{
+  font-weight: 100;
 }
 
 /* Слайдер только на экранах <600px */
@@ -668,6 +673,7 @@ body {
 
   .header__mobile {
     padding: 25px;
+    padding-bottom: 0;
   }
 
   .news {
