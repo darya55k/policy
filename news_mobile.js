@@ -8,7 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
       allNews = data;
 
       const pathname = window.location.pathname;
-      const isMainPage = pathname.endsWith('index.html') || pathname === '/' || pathname.endsWith('index.html'); 
+      const isMainPage =
+        pathname.endsWith('index.html') ||
+        pathname === '/' ||
+        pathname === '/policy/' || // для GitHub Pages
+        pathname.endsWith('index.html');
       const isAktualnoePage = pathname.endsWith('aktualnoe.html');
 
       const isMobile = window.innerWidth <= 600;
