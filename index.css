@@ -228,6 +228,8 @@ body {
   border-style: solid;
   color: white;
   cursor: pointer;
+  max-width: 150px;
+  text-align: center;
 }
 
 /* FOOTER */
@@ -370,7 +372,7 @@ body {
   padding-bottom: 30px;
 }
 
-.bio__text{
+.bio__text {
   font-weight: 100;
 }
 
@@ -616,8 +618,12 @@ body {
     display: block;
   }
 
-  .news__cards {
+  .news__cards_aktualnoe {
     display: none;
+  }
+
+  .news__cards_aktualnoe {
+    display: grid;
   }
 
   .news__card {

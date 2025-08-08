@@ -1,8 +1,5 @@
-// news.js
-
 let allNews = [];
-let newsPerPage = 6;
-let currentIndex = 0;
+const newsPerPage = 6;
 
 document.addEventListener('DOMContentLoaded', () => {
   fetch('data.json')
@@ -10,34 +7,56 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       allNews = data;
 
-      const isDesktop = window.innerWidth > 600;
+      const pathname = window.location.pathname;
+      const isMainPage = pathname.endsWith('index.html') || pathname === '/' || pathname.endsWith('главная.html'); // поправь, если нужно
+      const isAktualnoePage = pathname.endsWith('aktualnoe.html');
 
-      if (isDesktop) {
-        renderNewsBatch();
-        const loadMoreBtn = document.getElementById('loadMoreBtn');
-        if (loadMoreBtn) {
-          loadMoreBtn.style.display = 'block';
-          loadMoreBtn.addEventListener('click', renderNewsBatch);
+      const isMobile = window.innerWidth <= 600;
+
+      if (isMobile) {
+        if (isMainPage) {
+          renderMobileSlider(allNews.slice(0, newsPerPage));
+          setupLoadMoreButtonMobile();
+        } else if (isAktualnoePage) {
+          renderNewsBatch(allNews.length);
+          hideLoadMoreButton();
+        } else {
+          renderNewsBatch(allNews.length);
+          hideLoadMoreButton();
         }
+        initSwiper();
       } else {
-        renderAllMobileNews();
+        // Десктоп
+        if (isMainPage) {
+          renderNewsBatch(newsPerPage);
+          setupLoadMoreButton();
+        } else if (isAktualnoePage) {
+          renderNewsBatch(allNews.length);
+          hideLoadMoreButton();
+        } else {
+          renderNewsBatch(allNews.length);
+          hideLoadMoreButton();
+        }
       }
     })
     .catch(error => console.error('Ошибка загрузки JSON:', error));
 });
 
-function renderNewsBatch() {
+// Рендер новостей для десктопа (карточки)
+function renderNewsBatch(count) {
   const container = document.querySelector('.news__cards');
   if (!container) return;
 
-  const nextBatch = allNews.slice(currentIndex, currentIndex + newsPerPage);
+  container.innerHTML = '';
 
-  nextBatch.forEach(news => {
+  const batch = allNews.slice(0, count);
+
+  batch.forEach(news => {
     const date = new Date(news.date * 1000).toLocaleDateString('ru-RU');
     const imageSrc = news.image || 'images/default.jpg';
 
     const html = `
-      <div class="news__card_body">
+      <div class="news__card_body" data-date="${date}">
         <p class="news__date">${date}</p>
         <div class="news__card">
           <img src="${imageSrc}" alt="новость" />
@@ -53,28 +72,22 @@ function renderNewsBatch() {
 
     container.insertAdjacentHTML('beforeend', html);
   });
-
-  currentIndex += nextBatch.length;
-
-  if (currentIndex >= allNews.length) {
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-  }
 }
 
-function renderAllMobileNews() {
+// Рендер слайдера для мобильных
+function renderMobileSlider(newsArray) {
   const container = document.querySelector('.news__cards_mobile');
   if (!container) return;
 
   container.innerHTML = '';
 
-  allNews.forEach(news => {
+  newsArray.forEach(news => {
     const date = new Date(news.date * 1000).toLocaleDateString('ru-RU');
     const imageSrc = news.image || 'images/default.jpg';
 
     const html = `
       <div class="swiper-slide">
-        <div class="news__card_body">
+        <div class="news__card_body" data-date="${date}">
           <p class="news__date">${date}</p>
           <div class="news__card">
             <img src="${imageSrc}" alt="новость" />
@@ -91,4 +104,64 @@ function renderAllMobileNews() {
 
     container.insertAdjacentHTML('beforeend', html);
   });
+}
+
+// Инициализация слайдера Swiper
+function initSwiper() {
+  if (window.mySwiper) {
+    window.mySwiper.destroy(true, true);
+  }
+
+  window.mySwiper = new Swiper('.news-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 10,
+    navigation: {
+      nextEl: '.custom-next',
+      prevEl: '.custom-prev',
+    },
+    loop: false,
+  });
+}
+
+// Кнопка "Все новости" для десктопа
+function setupLoadMoreButton() {
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+  if (!loadMoreBtn) return;
+
+  loadMoreBtn.style.display = 'block';
+  loadMoreBtn.addEventListener('click', () => {
+    window.location.href = 'aktualnoe.html';
+  });
+}
+
+// Кнопка "Все новости" для мобильной версии (отдельная кнопка ниже слайдера)
+function setupLoadMoreButtonMobile() {
+  let btn = document.getElementById('loadMoreBtnMobile');
+  if (!btn) {
+    // Создаем кнопку, если её нет
+    btn = document.createElement('a');
+    btn.id = 'loadMoreBtnMobile';
+    btn.className = 'news__button_id';
+    btn.href = 'aktualnoe.html';
+    btn.textContent = 'Все новости';
+
+    // Добавим кнопку после слайдера
+    const sliderWrapper = document.querySelector('.news-slider-wrapper');
+    if (sliderWrapper) {
+      sliderWrapper.insertAdjacentElement('afterend', btn);
+    }
+  }
+
+  btn.style.display = 'block';
+
+  mobileBtn.style.maxWidth = '200px';
+
+}
+
+function hideLoadMoreButton() {
+  const desktopBtn = document.getElementById('loadMoreBtn');
+  if (desktopBtn) desktopBtn.style.display = 'none';
+
+  const mobileBtn = document.getElementById('loadMoreBtnMobile');
+  if (mobileBtn) mobileBtn.style.display = 'none';
 }
