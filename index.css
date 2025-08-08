@@ -5,13 +5,20 @@
 }
 
 body {
+  
+  margin: 0;
+}
+
+.page {
   font-family: sans-serif;
   background-color: #0f2d6c;
   color: white;
   min-width: 400px;
+  
   overflow-x: hidden;
   height: 100%;
   margin: 0;
+  margin: 0 auto;
 }
 
 .footer__street {
@@ -510,7 +517,7 @@ body {
     }
   }
 
-  @media (max-width: 610px) {
+  @media (max-width: 620px) {
     .nav__list li a {
       font-size: 11px;
     }
@@ -518,7 +525,7 @@ body {
 
   @media (max-width: 580px) {
     .nav__list li a {
-      font-size: 7px;
+      font-size: 11px;
       margin-right: 0;
     }
 
@@ -565,6 +572,13 @@ body {
       right: 10px;
     }
 
+  }
+
+  @media (max-width: 560px) {
+    .nav__list li a {
+      font-size: 7px;
+      margin-right: 0;
+    }
   }
 
 }
